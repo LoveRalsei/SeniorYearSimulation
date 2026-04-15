@@ -24,5 +24,17 @@ namespace AndroidApp1
                 $"\tÓïÎÄ£º{student.chinese}\tÊýÑ§£º{student.math}\tÓ¢Óï£º{student.english}\n" +
                 $"\t{student.crouse1Name}£º{student.crouse1Grade}\t{student.crouse2Name}£º{student.crouse2Grade}\t{student.crouse3Name}£º{student.crouse3Grade}";
         }
+
+        private bool NoLazy()
+        {
+            int randInt =Random.Shared.Next(1, 100);
+            return randInt>= student.laziness;
+        }
+
+        private bool NoConfusion()
+        {
+            int randInt = Random.Shared.Next(1, 100);
+            return randInt >= student.confusion;
+        }
     }
 }
