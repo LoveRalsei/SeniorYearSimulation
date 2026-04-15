@@ -13,5 +13,6 @@
       To learn more, see: https://learn.microsoft.com/dotnet/core/deploying/trimming/trimming-options#trimming-granularity
     -->
     <TrimMode>full</TrimMode>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
 </Project>

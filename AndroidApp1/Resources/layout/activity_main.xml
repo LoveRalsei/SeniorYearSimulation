@@ -11,6 +11,10 @@
 		android:layout_height="wrap_content"
 		android:layout_centerInParent="true"
 		android:text="@string/app_text"
-		android:id="@+id/propertiesTextView" 
+		android:id="@+id/propertiesTextView"
+		android:autoSizeMaxTextSize="32px"
+		android:autoSizeMinTextSize="16px"
+		android:gravity="center" 
     />
+
 </RelativeLayout>
