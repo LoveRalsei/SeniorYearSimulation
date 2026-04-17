@@ -1,0 +1,144 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text.Json;
+using Android.App;
+
+namespace AndroidApp1
+{
+    /// <summary>
+    /// 静态帮助类：用于从 Assets 读取 JSON 文件，并根据给定键查找其中的对象数组或值。
+    /// </summary>
+    public static class JsonFileReader
+    {
+        /// <summary>
+        /// 从应用的 Assets 中读取指定文件的内容为字符串。
+        /// </summary>
+        public static string? ReadJsonFromAssets(string assetFileName)
+        {
+            try
+            {
+                var context = Application.Context;
+                using var stream = context.Assets.Open(assetFileName);
+                using var reader = new StreamReader(stream);
+                return reader.ReadToEnd();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 在指定 Assets 中的 json 文件中查找第一个键名为 key 的属性，并返回该属性的值字符串（去掉 JSON 引号）。
+        /// 支持字符串、数组（返回第一个元素）、数值、布尔、对象（返回对象的原始 JSON）。
+        /// 解析失败或未找到时返回 "fail"。
+        /// </summary>
+        public static string FindArrayByKey(string assetFileName, string key)
+        {
+            if (string.IsNullOrEmpty(assetFileName) || string.IsNullOrEmpty(key))
+                return "fail";
+
+            try
+            {
+                var json = ReadJsonFromAssets(assetFileName);
+                if (string.IsNullOrEmpty(json))
+                    return "fail";
+
+                using var doc = JsonDocument.Parse(json);
+                if (TryFindPropertyRecursive(doc.RootElement, key, out var found))
+                {
+                    switch (found.ValueKind)
+                    {
+                        case JsonValueKind.String:
+                            return found.GetString() ?? "fail";
+                        case JsonValueKind.Number:
+                        case JsonValueKind.True:
+                        case JsonValueKind.False:
+                            return found.GetRawText();
+                        case JsonValueKind.Array:
+                            {
+                                foreach (var item in found.EnumerateArray())
+                                {
+                                    if (item.ValueKind == JsonValueKind.String)
+                                        return item.GetString() ?? "fail";
+                                    else
+                                        return item.GetRawText();
+                                }
+                                return "fail"; // 空数组
+                            }
+                        case JsonValueKind.Object:
+                            return found.GetRawText();
+                        case JsonValueKind.Null:
+                        case JsonValueKind.Undefined:
+                        default:
+                            return "fail";
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // 解析失败或其他问题，返回 "fail"
+            }
+
+            return "fail";
+        }
+
+        static bool TryFindPropertyRecursive(JsonElement element, string key, out JsonElement propertyElement)
+        {
+            propertyElement = default;
+
+            if (element.ValueKind == JsonValueKind.Object)
+            {
+                if (element.TryGetProperty(key, out var prop))
+                {
+                    propertyElement = prop;
+                    return true;
+                }
+
+                foreach (var child in element.EnumerateObject())
+                {
+                    if (child.Value.ValueKind == JsonValueKind.Object || child.Value.ValueKind == JsonValueKind.Array)
+                    {
+                        if (TryFindPropertyRecursive(child.Value, key, out propertyElement))
+                            return true;
+                    }
+                }
+            }
+            else if (element.ValueKind == JsonValueKind.Array)
+            {
+                foreach (var item in element.EnumerateArray())
+                {
+                    if (item.ValueKind == JsonValueKind.Object || item.ValueKind == JsonValueKind.Array)
+                    {
+                        if (TryFindPropertyRecursive(item, key, out propertyElement))
+                            return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        /*
+        // 注释：以下方法与 FindArrayByKey 无关，按要求注释掉。
+        public static List<T> DeserializeArrayByKey<T>(string json, string key)
+        {
+            var raw = FindArrayByKey(json, key);
+            if (string.IsNullOrEmpty(raw) || raw == "fail")
+                return new List<T>();
+
+            try
+            {
+                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var result = JsonSerializer.Deserialize<List<T>>(raw, options);
+                return result ?? new List<T>();
+            }
+            catch (Exception)
+            {
+                return new List<T>();
+            }
+        }
+        */
+    }
+}

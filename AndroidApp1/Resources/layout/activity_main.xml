@@ -1,20 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:paddingTop="300px">
+	android:paddingTop="300px"
+	android:orientation="vertical">
+
+
+
 	<TextView
-		android:layout_width="fill_parent"
+		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_centerInParent="true"
+		android:layout_centerInParent="false"
 		android:text="@string/app_text"
 		android:id="@+id/propertiesTextView"
-		android:autoSizeMaxTextSize="32px"
+		android:autoSizeMaxTextSize="64px"
 		android:autoSizeMinTextSize="16px"
-		android:gravity="center" 
+		android:background="@android:drawable/divider_horizontal_bright"
+		android:padding="8dp"
+		android:gravity="center"
     />
 
-</RelativeLayout>
+
+	<!-- 可放在现有根布局内的合适位置，确保根布局是垂直方向 (orientation="vertical") -->
+	<LinearLayout
+		android:id="@+id/button_strip"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:padding="8dp">
+
+		<Button
+			android:id="@+id/btnA"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="按钮 A" />
+
+		<Button
+			android:id="@+id/btnB"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="按钮 B" />
+
+		<Button
+			android:id="@+id/btnC"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="按钮 C" />
+	</LinearLayout>
+
+	<!-- 下面的区域用于动态显示“其他控件”（这里用 TextView 占位），包在 ScrollView 以支持滚动 -->
+	<ScrollView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:fillViewport="true"
+		android:padding="8dp">
+
+		<LinearLayout
+			android:id="@+id/resultContainer"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical" />
+	
+	</ScrollView>
+</LinearLayout>
