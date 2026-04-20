@@ -21,6 +21,7 @@
 		android:background="@android:drawable/divider_horizontal_bright"
 		android:padding="8dp"
 		android:gravity="center"
+		android:textColor="#ff000000" 
     />
 
 
@@ -37,35 +38,70 @@
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_weight="1"
-			android:text="按钮 A" />
+			android:text="学习" />
 
 		<Button
 			android:id="@+id/btnB"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_weight="1"
-			android:text="按钮 B" />
+			android:text="消费" />
 
 		<Button
 			android:id="@+id/btnC"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_weight="1"
-			android:text="按钮 C" />
+			android:text="消遣" />
 	</LinearLayout>
 
 	<!-- 下面的区域用于动态显示“其他控件”（这里用 TextView 占位），包在 ScrollView 以支持滚动 -->
 	<ScrollView
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
+		android:layout_height="fill_parent"
 		android:fillViewport="true"
-		android:padding="8dp">
+		android:layout_below="@+id/button_strip">
 
 		<LinearLayout
 			android:id="@+id/resultContainer"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:orientation="vertical" />
-	
+			android:orientation="vertical">
+			<Button
+				android:text="Button1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:minWidth="25px"
+				android:minHeight="25px"
+				android:id="@+id/testButton" />
+			<Button
+				android:text="Button1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:minWidth="25px"
+				android:minHeight="25px"
+				android:id="@+id/testButton11" />
+			<Button
+				android:text="Button1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:minWidth="25px"
+				android:minHeight="25px"
+				android:id="@+id/testButton12" />
+			<Button
+				android:text="Button1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:minWidth="25px"
+				android:minHeight="25px"
+				android:id="@+id/testButton3" />
+			<Button
+				android:text="Button1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:minWidth="25px"
+				android:minHeight="25px"
+				android:id="@+id/testButton14" />
+		</LinearLayout>
 	</ScrollView>
 </LinearLayout>

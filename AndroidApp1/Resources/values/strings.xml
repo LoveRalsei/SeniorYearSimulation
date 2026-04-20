@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">AndroidApp1</string>
-    <string name="app_text">Hello, Android!</string>
+    <string name="app_name">高三模拟器</string>
+    <string name="app_text">高三模拟器文本</string>
 </resources>
