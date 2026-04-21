@@ -11,7 +11,10 @@ namespace AndroidApp1
     [Activity(Label = "@string/app_name", MainLauncher = true)]
     public class MainActivity : Activity
     {
-        Student student = new Student("111", 2, 3, 4, 5, 6,6, 6, 7, 8, 9, "物理", 1, "化学", 2, "生物", 3);
+        private GameManager _gameManager;
+
+        //Student student = new Student("111", 2, 3, 4, 5, 6,6, 6, 7, 8, 9, "物理", 1, "化学", 2, "生物", 3);
+        
         TextView propertiesTextView;
 
         LinearLayout resultContainer;
@@ -26,6 +29,9 @@ namespace AndroidApp1
         protected override void OnCreate(Bundle? savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
+
+            _gameManager= new GameManager(this);
+
 
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.activity_main);
@@ -96,7 +102,7 @@ namespace AndroidApp1
                     dialog.SetScrollButton("滚动按钮", () => {
                         // 点击响应逻辑
                     });
-
+                    dialog.CancelOnTouchOutside=false; // 点击外部区域关闭弹窗（可选）
                 };
             }
 
@@ -104,6 +110,8 @@ namespace AndroidApp1
             ShowButtons(buttonGroup1);
             HideButtons(buttonGroup2);
             HideButtons(buttonGroup3);
+
+            _gameManager.StartGame();
         }
         // 处理按钮点击的公共方法
         void HandleButtonClick(Button selected, string label)
@@ -153,6 +161,7 @@ namespace AndroidApp1
                 tv.LayoutParameters = lp;
                 //resultContainer.AddView(tv);
             }
+
         }
         // 适配文本大小以适应 TextView 宽度的函数
         void FitTextToWidth(TextView tv, float minSp = 8f, float maxSp = 40f)
@@ -183,6 +192,8 @@ namespace AndroidApp1
         // 刷新属性显示的函数
         protected void RefreshPropertiesTextView()
         {
+            Student student = _gameManager.Student;
+            if (student != null) 
             propertiesTextView?.Text = $"\t健康：{student.health}\t\t精力：{student.energy}\t\t心情：{student.happiness}\n" +
                 $"\t魅力：{student.charm}\t\t懒惰：{student.laziness}\t\t迷茫：{student.confusion}\n" +
                 $"\t语文：{student.chinese}\t\t数学：{student.math}\t\t英语：{student.english}\n" +

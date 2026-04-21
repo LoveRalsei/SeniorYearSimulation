@@ -25,6 +25,7 @@ namespace AndroidApp1
         private int _currentCharIndex;
         private bool _isTypewriterEnabled = false;
         private System.Action? _onTypewriterComplete;
+        private bool _cancelOnTouchOutside = true;
 
         /// <summary>
         /// 创建自定义弹窗
@@ -36,6 +37,10 @@ namespace AndroidApp1
 
             // 创建Dialog，使用透明主题（无标题、背景透明，消除灰色矩形）
             _dialog = new Dialog(context, Android.Resource.Style.ThemeTranslucentNoTitleBar);
+
+            // 设置外部点击取消行为
+            _dialog.SetCancelable(true);
+            _dialog.SetCanceledOnTouchOutside(_cancelOnTouchOutside);
 
             // 设置布局
             var layout = new LinearLayout(context)
@@ -166,10 +171,6 @@ namespace AndroidApp1
                 int width = (int)(displayMetrics.WidthPixels * 0.85); // 占屏幕宽度的85%
                 window.SetLayout(width, ViewGroup.LayoutParams.WrapContent);
             }
-
-            // 点击外部不可取消（可选）
-            _dialog.SetCancelable(true);
-            _dialog.SetCanceledOnTouchOutside(true);
         }
 
         /// <summary>
@@ -319,7 +320,7 @@ namespace AndroidApp1
         }
 
         /// <summary>
-        /// 显示弹窗，屏幕背景变暗
+        /// 显示弹窗，屏幕背景变暗，阻止后面的组件交互
         /// </summary>
         public void Show()
         {
@@ -330,7 +331,7 @@ namespace AndroidApp1
         }
 
         /// <summary>
-        /// 隐藏弹窗，屏幕变暗失效
+        /// 隐藏弹窗，屏幕变暗失效，恢复后面组件的交互
         /// </summary>
         public void Hide()
         {
@@ -344,5 +345,18 @@ namespace AndroidApp1
         /// 判断弹窗是否正在显示
         /// </summary>
         public bool IsShowing => _dialog.IsShowing;
+
+        /// <summary>
+        /// 设置或获取是否允许点击弹窗外部关闭弹窗
+        /// </summary>
+        public bool CancelOnTouchOutside
+        {
+            get => _cancelOnTouchOutside;
+            set
+            {
+                _cancelOnTouchOutside = value;
+                _dialog.SetCanceledOnTouchOutside(value);
+            }
+        }
     }
 }
