@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Text.Json;
 using Android.App;
 
@@ -20,7 +21,7 @@ namespace AndroidApp1
             {
                 var context = Application.Context;
                 using var stream = context.Assets.Open(assetFileName);
-                using var reader = new StreamReader(stream);
+                using var reader = new StreamReader(stream,Encoding.UTF8);
                 return reader.ReadToEnd();
             }
             catch (Exception)
@@ -92,7 +93,7 @@ namespace AndroidApp1
         /// <param name="assetFileName">Assets 中的 JSON 文件名</param>
         /// <param name="key">要查找的键</param>
         /// <returns>键对应的值的 JSON 字符串；若未找到或出错则返回 null</returns>
-        public static string? ReadValueByKey(string assetFileName, string key)
+        public static string? GetValueByKey(string assetFileName, string key)
         {
             if (string.IsNullOrEmpty(assetFileName) || string.IsNullOrEmpty(key))
                 return null;

@@ -7,13 +7,14 @@ using System.Text.Json;
 
 namespace AndroidApp1
 {
-    internal class GameManager
+    public class GameManager
     {
         private bool _gameStarted = false;
         private MainActivity _mainActivity;
 
         public Student Student;
         private Student _lastStudent;
+        private bool _choosedStudent = false;
         // 属性
         private int currentTurn;
         private const int MAX_TURNS = 10;
@@ -38,22 +39,30 @@ namespace AndroidApp1
                 return;
 
             var dialog = new CustomDialog(_mainActivity);
-            dialog.SetTitle("");
-            dialog.SetMessage("");
-            dialog.SetScrollButton("", () =>
+            dialog.SetTitle(_mainActivity.GetString(Resource.String.dialog_startgame_title));
+            dialog.SetMessage(_mainActivity.GetString(Resource.String.dialog_startgame_intro));
+            dialog.AddScrollButton(_mainActivity.GetString(Resource.String.dialog_startgame_option1), () =>
             {
-                var studentJson = JsonFileReader.ReadValueByKey("studentdata.json", "Student_test");
+                var studentJson = JsonFileReader.GetValueByKey("studentdata.json", "Student_test");
                 if (!string.IsNullOrEmpty(studentJson))
                 {
                     Student = JsonSerializer.Deserialize<Student>(studentJson);
+                    _mainActivity.RefreshPropertiesTextView();
                 }
             });
-            dialog.SetButtonText("开始");
+            dialog.SetButtonText(_mainActivity.GetString(Resource.String.dialog_startgame_startbutton));
             dialog.SetOnButtonClick(()=> { 
+                if(Student==null)
+                {
+                    dialog.SetMessage(_mainActivity.GetString(Resource.String.dialog_startgame_introwarning));
+                    return;
+                }
                 _gameStarted = true;
                 dialog.Hide();
             });
+            dialog.CancelOnTouchOutside=false; // 取消点击外部区域关闭弹窗
             dialog.Show();
+
         }
 
         public void InitializeGame()

@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">高三模拟器</string>
     <string name="app_text">高三模拟器文本</string>
+	<string name="dialog_startgame_title">欢迎来到高三模拟器</string>
+	<string name="dialog_startgame_intro">选择你的角色：</string>
+	<string name="dialog_startgame_introwarning">选择你的角色！</string>
+	<string name="dialog_startgame_option1">张三</string>
+	<string name="dialog_startgame_startbutton">开始</string>
+	<string name="dialog_action_do">执行</string>
 </resources>

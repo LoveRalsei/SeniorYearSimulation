@@ -67,13 +67,20 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:orientation="vertical">
-			<Button
-				android:text="Button1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content"
-				android:minWidth="25px"
-				android:minHeight="25px"
-				android:id="@+id/testButton" />
+<Button
+			android:text="ActionButton"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:minWidth="25px"
+			android:minHeight="25px"
+			android:id="@+id/actionButton" />
+		<Button
+			android:text="Button1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:minWidth="25px"
+			android:minHeight="25px"
+			android:id="@+id/testButton" />
 			<Button
 				android:text="Button1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"
 				android:layout_width="match_parent"

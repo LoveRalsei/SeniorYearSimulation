@@ -19,7 +19,9 @@ namespace AndroidApp1
         private readonly Button _confirmButton;
         private readonly Context _context;
         private ScrollView? _scrollView;
-        private Button? _scrollButton;
+        private List<Button> _scrollButtons = new List<Button>();
+        private CustomDialog _actionDialog;
+
         private Java.Util.Timer? _typewriterTimer;
         private string _fullMessage = "";
         private int _currentCharIndex;
@@ -125,19 +127,6 @@ namespace AndroidApp1
                 ViewGroup.LayoutParams.WrapContent);
             scrollLayoutParams.TopMargin = (int)(16 * context.Resources.DisplayMetrics.Density);
 
-            // 创建滚动按钮
-            _scrollButton = new Button(context)
-            {
-                Text = ""
-            };
-            _scrollButton.SetTextColor(Android.Graphics.Color.Black);
-            _scrollButton.TextSize = 14;
-
-            // 设置按钮背景（淡灰色圆角）
-            var scrollButtonBackground = new GradientDrawable();
-            scrollButtonBackground.SetColor(Android.Graphics.Color.ParseColor("#D3D3D3"));
-            scrollButtonBackground.SetCornerRadius(8 * context.Resources.DisplayMetrics.Density);
-            _scrollButton.Background = scrollButtonBackground;
 
             // 设置按钮宽度为弹窗宽度的80%
             var displayMetrics = context.Resources.DisplayMetrics;
@@ -150,7 +139,7 @@ namespace AndroidApp1
             scrollButtonLayoutParams.Gravity = GravityFlags.CenterHorizontal;
             scrollButtonLayoutParams.TopMargin = (int)(8 * context.Resources.DisplayMetrics.Density);
 
-            _scrollView.AddView(_scrollButton, scrollButtonLayoutParams);
+            //_scrollView.AddView(_scrollButton, scrollButtonLayoutParams);
             layout.AddView(_scrollView, scrollLayoutParams);
 
             layout.AddView(buttonContainer);
@@ -212,6 +201,7 @@ namespace AndroidApp1
         /// <param name="onComplete">文本全部显示完毕时触发的回调</param>
         public void SetOnTypewriterComplete(System.Action onComplete)
         {
+            _onTypewriterComplete = null;
             _onTypewriterComplete = onComplete;
         }
 
@@ -307,16 +297,63 @@ namespace AndroidApp1
         /// </summary>
         /// <param name="text">按钮文本</param>
         /// <param name="onClick">按钮点击响应函数</param>
-        public void SetScrollButton(string text, System.Action onClick)
+        public void AddScrollButton(string text, System.Action onClick)
         {
-            if (_scrollButton != null)
+            // 设置按钮背景（淡灰色圆角）
+            var scrollButtonBackground = new GradientDrawable();
+            scrollButtonBackground.SetColor(Android.Graphics.Color.ParseColor("#D3D3D3"));
+            scrollButtonBackground.SetCornerRadius(8 * _context.Resources.DisplayMetrics.Density);
+            Button newScrollButton = new Button(_context)
             {
-                _scrollButton.Text = text;
-                _scrollButton.Click += (s, e) =>
-                {
-                    onClick?.Invoke();
-                };
-            }
+                Text = text,
+                TextSize = 14,
+                Background = scrollButtonBackground
+            };
+            newScrollButton.SetTextColor(Android.Graphics.Color.Black);
+            newScrollButton.Click += (s, e) =>
+            {
+                onClick?.Invoke();
+            };
+
+            _scrollButtons.Add(newScrollButton);
+            _scrollView?.AddView(newScrollButton);
+        }
+
+        private void NewScrollButton_Click(object? sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void BecomeActionDialog(string title, string intro, string finishText, System.Action onclick)
+        {
+            _actionDialog = new CustomDialog(_context);
+
+            SetTitle(title);
+            SetMessage(intro);
+            SetButtonText("执行");
+            _actionDialog.SetOnButtonClick(() =>
+            {
+                _actionDialog.Hide();
+                _actionDialog.ResetActionDialog(finishText);
+            });
+            _actionDialog.SetOnTypewriterComplete(() =>
+            {
+                onclick?.Invoke();
+            });
+            SetOnButtonClick(() =>
+            {
+                Hide();
+                _actionDialog.Show();
+                _actionDialog.EnableTypewriterEffect(true);
+                _actionDialog.SetMessage(finishText);
+                _actionDialog.SetButtonText("关闭");
+
+            });
+        }
+
+        public void ResetActionDialog(string finishText)
+        {
+            SetMessage(finishText);
         }
 
         /// <summary>
