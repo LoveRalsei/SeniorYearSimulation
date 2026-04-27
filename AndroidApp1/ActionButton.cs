@@ -14,11 +14,11 @@ namespace AndroidApp1
     public class ActionButton : LinearLayout
     {
         // 三个TextView成员变量
-        private TextView titleText;
-        private TextView descText;
-        private TextView costText;
+        protected TextView titleText;
+        protected TextView descText;
+        protected TextView costText;
 
-        private CustomDialog _dialog;
+        protected ActionDialog _dialog;
 
         // 构造函数
         public ActionButton(Context context) : base(context)
@@ -90,7 +90,7 @@ namespace AndroidApp1
 
         public void SetDialog(string title, string intro, string finishText, System.Action onclick)
         {
-            _dialog = new CustomDialog(Context);
+            _dialog = new ActionDialog(Context);
             _dialog.BecomeActionDialog(title, intro, finishText, onclick);
             _dialog.CancelOnTouchOutside = true; // 点击外部区域关闭弹窗
         }

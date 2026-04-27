@@ -1,11 +1,7 @@
-using Android.App;
 using Android.Graphics;
-using Android.OS;
 using Android.Util;
 using Android.Views;
-using Android.Widget;
 using AndroidApp1.UI;
-using System.Collections.Generic;
 
 namespace AndroidApp1
 {
@@ -14,8 +10,6 @@ namespace AndroidApp1
     {
         public GameManager _gameManager;
 
-        //Student student = new Student("111", 2, 3, 4, 5, 6,6, 6, 7, 8, 9, "物理", 1, "化学", 2, "生物", 3);
-
         TextView propertiesTextView;
 
         LinearLayout resultContainer;
@@ -23,11 +17,11 @@ namespace AndroidApp1
 
         // ScrollView中的按钮列表
         List<Button> scrollViewButtons;
-        List<ActionButton> buttonGroup_Study;
+        List<StudyActionButton> buttonGroup_Study;
         List<ActionButton> buttonGroup2;
         List<ActionButton> buttonGroup3;
 
-        UI_StudyActionButtons ui_studyActionButtons;
+        Button _endTurnButton;
 
         protected override void OnCreate(Bundle? savedInstanceState)
         {
@@ -45,9 +39,10 @@ namespace AndroidApp1
 
 
             // 找到控件
-            var btnA = FindViewById<Button>(Resource.Id.btnA);
-            var btnB = FindViewById<Button>(Resource.Id.btnB);
-            var btnC = FindViewById<Button>(Resource.Id.btnC);
+            var btnA = FindViewById<Button>(Resource.Id.action_study);
+            var btnB = FindViewById<Button>(Resource.Id.action_spendmoney);
+            var btnC = FindViewById<Button>(Resource.Id.action_pastime);
+            _endTurnButton = FindViewById<Button>(Resource.Id.endturnbutton);
             //resultContainer = FindViewById<LinearLayout>(Resource.Id.resultContainer);
             resultContainer = FindViewById<LinearLayout>(Resource.Id.resultContainer);
 
@@ -55,12 +50,13 @@ namespace AndroidApp1
             // 公共点击处理器
 
             // 绑定事件
-            btnA.Click += (s, e) => HandleButtonClick(btnA, "按钮 A");
-            btnB.Click += (s, e) => HandleButtonClick(btnB, "按钮 B");
-            btnC.Click += (s, e) => HandleButtonClick(btnC, "按钮 C");
+            btnA.Click += (s, e) => HandleButtonClick(btnA, "学习按钮");
+            btnB.Click += (s, e) => HandleButtonClick(btnB, "消费按钮");
+            btnC.Click += (s, e) => HandleButtonClick(btnC, "消遣按钮");
+            //_endTurnButton.Click += (s, e) => _gameManager.EndTurn();
 
             // 可选：如果想一开始就让某个按钮处于启用并显示其内容，调用一次：
-            HandleButtonClick(btnA, "按钮 A");
+            HandleButtonClick(btnA, "学习按钮");
 
             FitTextToWidth(propertiesTextView, minSp: 10f, maxSp: 36f);
             /*var json = JsonFileReader.FindArrayByKey("text.json", "test1");
@@ -68,53 +64,16 @@ namespace AndroidApp1
 
             // 初始化ScrollView中的按钮列表
             scrollViewButtons = new List<Button>();
-            buttonGroup_Study = new List<ActionButton>();
+            buttonGroup_Study = new List<StudyActionButton>();
             buttonGroup2 = new List<ActionButton>();
             buttonGroup3 = new List<ActionButton>();
 
-
-            // 创建ActionButton实例并显示
-            var actionBtn = new ActionButton(this);
-            actionBtn.SetAllTexts("示例标题", "这是描述文本", "花费：100");
-            actionBtn.SetOnClickListener((s, e) =>
-            {
-                Toast.MakeText(this, "ActionButton 被点击了！", ToastLength.Short).Show();
-            });
-            resultContainer.AddView(actionBtn);
-            
-
-            // 为testButton添加点击事件，显示CustomDialog弹窗
-            /*if (testButton != null)
-            {
-                testButton.Click += (s, e) =>
-                {
-                    var dialog = new CustomDialog(this);
-                    dialog.SetTitle("提示");
-                    dialog.SetMessage("这是一个自定义弹窗，点击确定按钮关闭。");
-                    dialog.SetButtonText("确定");
-                    // 设置按钮点击事件：关闭弹窗
-                    dialog.SetOnButtonClick(() => dialog.Hide());
-                    dialog.Show();
-                    dialog.EnableTypewriterEffect(true); // 启用打字机效果（可选）
-                    dialog.SetOnTypewriterComplete(() =>
-                    {
-                        // 弹窗打字机完成后的逻辑
-                    });
-                    dialog.SetMessage("这是一个逐字显示的文本效果，每0.2秒显示一个字符。");
-                    dialog.SetScrollButton("滚动按钮", () =>
-                    {
-                        // 点击响应逻辑
-                    });
-                    dialog.CancelOnTouchOutside = false; // 点击外部区域关闭弹窗（可选）
-                };
-            }*/
-
-            // 示例：初始显示第一组按钮，隐藏其他组
+            // 初始化ActionButton实例
             InitializeActionButtons();
 
-            ShowButtons(buttonGroup_Study);
-            HideButtons(buttonGroup2);
-            HideButtons(buttonGroup3);
+            ShowStudyActionButtons(buttonGroup_Study);
+            HideActionButtons(buttonGroup2);
+            HideActionButtons(buttonGroup3);
 
             _gameManager.StartGame();
         }
@@ -129,43 +88,26 @@ namespace AndroidApp1
             }
 
             // 根据点击的按钮切换显示对应的按钮组
-            if (selected.Id == Resource.Id.btnA)
+            if (selected.Id == Resource.Id.action_study)
             {
-                ShowButtons(buttonGroup_Study);
-                HideButtons(buttonGroup2);
-                HideButtons(buttonGroup3);
+                ShowStudyActionButtons(buttonGroup_Study);
+                HideActionButtons(buttonGroup2);
+                HideActionButtons(buttonGroup3);
             }
-            else if (selected.Id == Resource.Id.btnB)
+            else if (selected.Id == Resource.Id.action_spendmoney)
             {
-                HideButtons(buttonGroup_Study);
-                ShowButtons(buttonGroup2);
-                HideButtons(buttonGroup3);
+                HideStudyActionButtons(buttonGroup_Study);
+                ShowActionButtons(buttonGroup2);
+                HideActionButtons(buttonGroup3);
             }
-            else if (selected.Id == Resource.Id.btnC)
+            else if (selected.Id == Resource.Id.action_pastime)
             {
-                HideButtons(buttonGroup_Study);
-                HideButtons(buttonGroup2);
-                ShowButtons(buttonGroup3);
+                HideStudyActionButtons(buttonGroup_Study);
+                HideActionButtons(buttonGroup2);
+                ShowActionButtons(buttonGroup3);
             }
 
-            // 隐藏其它按钮所生成的控件：清空容器并只添加当前按钮的控件
-            //resultContainer.RemoveAllViews();
-
-            // 示例：为当前选中按钮动态添加若干测试 TextView（按需修改数量与样式）
-            for (int i = 1; i <= 5; i++)
-            {
-                var tv = new TextView(this)
-                {
-                    Text = $"{label} 的项目 {i}",
-                    TextSize = 16
-                };
-                var lp = new LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MatchParent,
-                    ViewGroup.LayoutParams.WrapContent);
-                lp.TopMargin = (int)(4 * Resources.DisplayMetrics.Density);
-                tv.LayoutParameters = lp;
-                //resultContainer.AddView(tv);
-            }
+            
 
         }
         // 适配文本大小以适应 TextView 宽度的函数
@@ -197,29 +139,29 @@ namespace AndroidApp1
         // 刷新属性显示的函数
         public void RefreshPropertiesTextView()
         {
-            Student student = _gameManager.Student;
-            if (student != null)
-                propertiesTextView?.Text = $"\t{student.name}\t\t\t\t金钱：{student.money}\n" +
-                    $"\t健康：{student.health}\t\t精力：{student.energy}\t\t心情：{student.happiness}\n" +
-                    $"\t魅力：{student.charm}\t\t懒惰：{student.laziness}\t\t迷茫：{student.confusion}\n" +
-                    $"\t语文：{student.chinese}\t\t数学：{student.math}\t\t英语：{student.english}\n" +
-                    $"\t{student.crouse1Name}：{student.crouse1Grade}\t\t{student.crouse2Name}：{student.crouse2Grade}\t\t{student.crouse3Name}：{student.crouse3Grade}";
+            if (GameManager.StudentData != null)
+                propertiesTextView?.Text = $"\t{GameManager.StudentData.name}\t\t\t\t金钱：{GameManager.StudentData.money}\n" +
+                    $"\t健康：{GameManager.StudentData.health}\t\t精力：{GameManager.StudentData.energy}\t\t心情：{GameManager.StudentData.happiness}\n" +
+                    $"\t魅力：{GameManager.StudentData.charm}\t\t懒惰：{GameManager.StudentData.laziness}\t\t迷茫：{GameManager.StudentData.confusion}\n" +
+                    $"\t语文：{GameManager.StudentData.chinese}\t\t数学：{GameManager.StudentData.math}\t\t英语：{GameManager.StudentData.english}\n" +
+                    $"\t{GameManager.StudentData.crouse1Name}：{GameManager.StudentData.crouse1Grade}\t\t{GameManager.StudentData.crouse2Name}：{GameManager.StudentData.crouse2Grade}\t\t{GameManager.StudentData.crouse3Name}：{GameManager.StudentData.crouse3Grade}";
         }
-
-        /*private bool NoLazy()
-        {
-            int randInt = Random.Shared.Next(1, 100);
-            return randInt >= student.laziness;
-        }
-
-        private bool NoConfusion()
-        {
-            int randInt = Random.Shared.Next(1, 100);
-            return randInt >= student.confusion;
-        }*/
 
         // 显示一个列表内所有按钮
-        public void ShowButtons(List<ActionButton> buttonList)
+        public void ShowActionButtons(List<ActionButton> buttonList)
+        {
+            if (buttonList == null) return;
+
+            foreach (var button in buttonList)
+            {
+                if (button != null)
+                {
+                    button.Visibility = ViewStates.Visible;
+                }
+            }
+        }
+
+        public void ShowStudyActionButtons(List<StudyActionButton> buttonList)
         {
             if (buttonList == null) return;
 
@@ -233,7 +175,20 @@ namespace AndroidApp1
         }
 
         // 隐藏一个列表内所有按钮
-        public void HideButtons(List<ActionButton> buttonList)
+        public void HideActionButtons(List<ActionButton> buttonList)
+        {
+            if (buttonList == null) return;
+
+            foreach (var button in buttonList)
+            {
+                if (button != null)
+                {
+                    button.Visibility = ViewStates.Gone;
+                }
+            }
+        }
+
+        public void HideStudyActionButtons(List<StudyActionButton> buttonList)
         {
             if (buttonList == null) return;
 
@@ -248,20 +203,38 @@ namespace AndroidApp1
 
         public void InitializeActionButtons()
         {
-            UI_StudyActionButtons actionButtons = new UI_StudyActionButtons(this);
+            Data_StudyActionButtons actionButtons = new Data_StudyActionButtons(this);
             foreach (var config in actionButtons.ActionButtons)
             {
-                var actionBtn = new ActionButton(this);
+                var actionBtn = new StudyActionButton(this);
 
-                actionBtn.SetAllTexts(config.Title, config.Description, config.Cost);
-                actionBtn.SetDialog(config.DialogTitle,config.DialogIntro,config.DialogFinish,config.ClickAction);
+                var currentBtn = actionBtn;
+
+                actionBtn.SetAllTexts(config.Title, config.Description, config.CostText);
+                currentBtn.SetDialog(config.DialogTitle,config.DialogIntro,config.DialogFinish,config.CostEnergy,config.Effects);
                 actionBtn.SetOnClickListener((s, e) =>
                 {
-                    actionBtn.ShowDialog();
+                    currentBtn.ShowDialog();
                 });
                 buttonGroup_Study.Add(actionBtn);
                 resultContainer.AddView(actionBtn);
             }
+            /*UI_StudyActionButtons actionButtons = new UI_StudyActionButtons(this);
+            foreach (var config in actionButtons.ActionButtons)
+            {
+                var actionBtn = new ActionButton(this);
+
+                var currentBtn = actionBtn;
+
+                actionBtn.SetAllTexts(config.Title, config.Description, config.Cost);
+                currentBtn.SetDialog(config.DialogTitle, config.DialogIntro, config.DialogFinish, config.ClickAction);
+                actionBtn.SetOnClickListener((s, e) =>
+                {
+                    currentBtn.ShowDialog();
+                });
+                buttonGroup_Study.Add(actionBtn);
+                resultContainer.AddView(actionBtn);
+            }*/
         }
     }
 }

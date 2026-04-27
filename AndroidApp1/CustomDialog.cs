@@ -13,21 +13,25 @@ namespace AndroidApp1
     /// </summary>
     public class CustomDialog
     {
-        private readonly Dialog _dialog;
-        private readonly TextView _titleTextView;
-        private readonly TextView _messageTextView;
-        private readonly Button _confirmButton;
-        private readonly Context _context;
-        private ScrollView? _scrollView;
-        private List<Button> _scrollButtons = new List<Button>();
-        private CustomDialog _actionDialog;
+        protected readonly Dialog _dialog;
+        protected readonly TextView _titleTextView;
+        protected readonly TextView _messageTextView;
+        protected readonly Button _confirmButton;
+        protected readonly Context _context;
+        protected ScrollView? _scrollView;
+        protected LinearLayout _scrollButtonContainer;
+        protected List<Button> _scrollButtons = new List<Button>();
 
-        private Java.Util.Timer? _typewriterTimer;
-        private string _fullMessage = "";
-        private int _currentCharIndex;
-        private bool _isTypewriterEnabled = false;
-        private System.Action? _onTypewriterComplete;
-        private bool _cancelOnTouchOutside = true;
+        protected System.Action? _onButtonClickCallback;
+        protected System.Action? _onDisableButtonClick;
+
+        protected Java.Util.Timer? _typewriterTimer;
+        protected string _fullMessage = "";
+        protected int _currentCharIndex;
+        protected bool _isTypewriterEnabled = false;
+        protected System.Action? _onTypewriterComplete;
+        protected bool _cancelOnTouchOutside = true;
+        protected bool _allowButtonClick = true;
 
         /// <summary>
         /// 创建自定义弹窗
@@ -121,6 +125,11 @@ namespace AndroidApp1
                 VerticalScrollBarEnabled = true
             };
             _scrollView.SetBackgroundColor(Android.Graphics.Color.Transparent);
+            _scrollButtonContainer = new LinearLayout(context)
+            {
+                Orientation = Orientation.Vertical
+            };
+            _scrollView.AddView(_scrollButtonContainer);
 
             var scrollLayoutParams = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MatchParent,
@@ -160,6 +169,15 @@ namespace AndroidApp1
                 int width = (int)(displayMetrics.WidthPixels * 0.85); // 占屏幕宽度的85%
                 window.SetLayout(width, ViewGroup.LayoutParams.WrapContent);
             }
+
+            // 在构造函数中只订阅一次按钮点击
+            _confirmButton.Click += (s, e) =>
+            {
+                if (_allowButtonClick == false)
+                    _onDisableButtonClick?.Invoke();
+                else
+                    _onButtonClickCallback?.Invoke();
+            };
         }
 
         /// <summary>
@@ -218,7 +236,7 @@ namespace AndroidApp1
 
             if (string.IsNullOrEmpty(_fullMessage))
             {
-                _onTypewriterComplete?.Invoke();
+                //_onTypewriterComplete?.Invoke();
                 return;
             }
 
@@ -286,10 +304,11 @@ namespace AndroidApp1
         /// </summary>
         public void SetOnButtonClick(System.Action onClick)
         {
-            _confirmButton.Click += (s, e) =>
+            _onButtonClickCallback = onClick;
+            /*_confirmButton.Click += (s, e) =>
             {
                 onClick?.Invoke();
-            };
+            };*/
         }
 
         /// <summary>
@@ -315,8 +334,21 @@ namespace AndroidApp1
                 onClick?.Invoke();
             };
 
+            // 获取现有的布局参数，如果存在则设置 TopMargin
+            var existingParams = newScrollButton.LayoutParameters as LinearLayout.LayoutParams;
+            if (existingParams == null)
+            {
+                existingParams = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MatchParent,
+                    ViewGroup.LayoutParams.WrapContent);
+            }
+            // 设置 10px 间隔
+            existingParams.TopMargin = (int)(10 * _context.Resources.DisplayMetrics.Density);
+            newScrollButton.LayoutParameters = existingParams;
+
             _scrollButtons.Add(newScrollButton);
-            _scrollView?.AddView(newScrollButton);
+            /*_scrollView?.AddView(newScrollButton);*/
+            _scrollButtonContainer.AddView(newScrollButton);
         }
 
         private void NewScrollButton_Click(object? sender, EventArgs e)
@@ -324,37 +356,8 @@ namespace AndroidApp1
             throw new NotImplementedException();
         }
 
-        public void BecomeActionDialog(string title, string intro, string finishText, System.Action onclick)
-        {
-            _actionDialog = new CustomDialog(_context);
 
-            SetTitle(title);
-            SetMessage(intro);
-            SetButtonText("执行");
-            _actionDialog.SetOnButtonClick(() =>
-            {
-                _actionDialog.Hide();
-                _actionDialog.ResetActionDialog(finishText);
-            });
-            _actionDialog.SetOnTypewriterComplete(() =>
-            {
-                onclick?.Invoke();
-            });
-            SetOnButtonClick(() =>
-            {
-                Hide();
-                _actionDialog.Show();
-                _actionDialog.EnableTypewriterEffect(true);
-                _actionDialog.SetMessage(finishText);
-                _actionDialog.SetButtonText("关闭");
 
-            });
-        }
-
-        public void ResetActionDialog(string finishText)
-        {
-            SetMessage(finishText);
-        }
 
         /// <summary>
         /// 显示弹窗，屏幕背景变暗，阻止后面的组件交互
@@ -394,6 +397,16 @@ namespace AndroidApp1
                 _cancelOnTouchOutside = value;
                 _dialog.SetCanceledOnTouchOutside(value);
             }
+        }
+
+        public void SetAllowButtonClick(bool allow)
+        {
+            _allowButtonClick = allow;
+        }
+
+        public void SetDisableButtonClickFunction(System.Action onDisable)
+        {
+            _onDisableButtonClick = onDisable;
         }
     }
 }
