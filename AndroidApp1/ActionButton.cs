@@ -88,10 +88,10 @@ namespace AndroidApp1
             costText.Text = cost;
         }
 
-        public void SetDialog(string title, string intro, string finishText, System.Action onclick)
+        public void SetDialog(string title, string intro, string finishText, int costEnergy, List<KeyValuePair<StudentProperty, int>> effects)
         {
             _dialog = new ActionDialog(Context);
-            _dialog.BecomeActionDialog(title, intro, finishText, onclick);
+            _dialog.BecomeActionDialog(title, intro, finishText, costEnergy,effects);
             _dialog.CancelOnTouchOutside = true; // 点击外部区域关闭弹窗
         }
 

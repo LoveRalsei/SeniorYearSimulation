@@ -47,6 +47,21 @@ namespace AndroidApp1
                     Toast.MakeText(_context, "_studentData为空！", ToastLength.Short).Show();
                 
                 GameManager.MainActivity.RefreshPropertiesTextView();
+
+                //输出结果
+                _actionDialog.EnableTypewriterEffect(false);
+                List<KeyValuePair<StudentProperty, int>> aimEffects = new List<KeyValuePair<StudentProperty, int>>();
+                foreach(var effect in effects)
+                {
+                    if(effect.Key==StudentProperty.Chinese || effect.Key == StudentProperty.Math || effect.Key == StudentProperty.English || effect.Key == StudentProperty.Crouse1Grade || effect.Key == StudentProperty.Crouse2Grade || effect.Key == StudentProperty.Crouse3Grade)
+                    {
+                        KeyValuePair<StudentProperty, int> aimEffect = new KeyValuePair<StudentProperty, int>(_chooseProperty, effect.Value);
+                        aimEffects.Add(aimEffect);
+                    }
+                    else
+                        aimEffects.Add(effect);
+                }
+                _actionDialog.SetMessage(GetEffectsString(true, costEnergy, aimEffects));
             });
             SetOnButtonClick(() =>
             {

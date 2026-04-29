@@ -14,7 +14,7 @@ namespace AndroidApp1
         public string Description { get; set; }
         public string CostText { get; set; }
         public int CostEnergy { get; set; }
-        public List<KeyValuePair<StudentProperty,int>> Effects { get; set;}
+        public List<KeyValuePair<StudentProperty, int>> Effects {  get; set; }
         public string DialogTitle { get; set; }
         public string DialogIntro { get; set; }
         public string DialogFinish { get; set; }

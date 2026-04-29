@@ -6,7 +6,14 @@ using System.Threading.Tasks;
 
 namespace AndroidApp1.UIdata
 {
-    internal class Data_Events
+    public class Data_Events
     {
+        private string _studentName;
+        private List<System.Action> _eventsZhangsan;
+
+        public Data_Events()
+        {
+
+        }
     }
 }

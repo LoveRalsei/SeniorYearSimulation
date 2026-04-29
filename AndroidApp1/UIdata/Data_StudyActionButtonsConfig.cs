@@ -22,33 +22,33 @@ namespace AndroidApp1.UI
                 new ActionButtonConfig
                 {
                     ResourceId = 1,
-                    Title = "学习",
-                    Description = "学习",
-                    CostText = "精力20",
-                    CostEnergy = 20,
+                    Title = "写习题册",
+                    Description = "写习题册",
+                    CostText = "精力10",
+                    CostEnergy = 10,
                     Effects = new List<KeyValuePair<StudentProperty, int>>
                     {
-                        new KeyValuePair<StudentProperty, int>(StudentProperty.Chinese, 20),
+                        new KeyValuePair<StudentProperty, int>(StudentProperty.Chinese, 7),
                     },
-                    DialogTitle = "学习",
-                    DialogIntro = "学习",
+                    DialogTitle = "写习题册",
+                    DialogIntro = "写习题册",
                     DialogFinish = "学习中······"
                     
                 },
                 new ActionButtonConfig
                 {
                     ResourceId = 2,
-                    Title = "休息",
-                    Description = "休息",
-                    CostText = "休息",
-                    CostEnergy = 0,
+                    Title = "做卷子",
+                    Description = "做卷子",
+                    CostText = "做卷子",
+                    CostEnergy = 10,
                     Effects = new List<KeyValuePair<StudentProperty, int>>
                     {
-                        new KeyValuePair<StudentProperty, int>(StudentProperty.Chinese, 10)
+                        new KeyValuePair<StudentProperty, int>(StudentProperty.Chinese, 7)
                     },
-                    DialogTitle = "休息",
-                    DialogIntro = "休息",
-                    DialogFinish = "休息中······"
+                    DialogTitle = "做卷子",
+                    DialogIntro = "做卷子",
+                    DialogFinish = "做卷子中······"
                 },
             };
         }

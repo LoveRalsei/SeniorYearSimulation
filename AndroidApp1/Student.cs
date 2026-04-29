@@ -139,18 +139,18 @@ namespace AndroidApp1
             this.energy -= value;
         }
 
-        public bool NoLazy()
+        public bool Lazy()
         {
             Random random = new Random();
             int randomValue = random.Next(1, 101);
-            return randomValue >= this.laziness;
+            return randomValue <= this.laziness;
         }
 
-        public bool NoConfusion()
+        public bool Confusion()
         {
             Random random = new Random();
             int randomValue = random.Next(1, 101);
-            return randomValue >= this.confusion;
+            return randomValue <= this.confusion;
         }
     }
 
