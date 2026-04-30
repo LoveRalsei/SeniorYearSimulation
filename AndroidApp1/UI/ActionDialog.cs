@@ -68,7 +68,8 @@ namespace AndroidApp1
         {
             string result = "";
 
-            result += "精力" + (costEnergy >= 0 ? "-" : "+") + $"{costEnergy}\n";
+            if(costEnergy>0)
+                result += "精力" + (costEnergy >= 0 ? "-" : "+") + $"{costEnergy}\n";
             foreach(var effect in effects)
             {
                 string effectName = "";
@@ -80,8 +81,11 @@ namespace AndroidApp1
                     case StudentProperty.Health:
                         effectName = "健康";
                         break;
+                    case StudentProperty.Energy:
+                        effectName = "精力";
+                        break;
                     case StudentProperty.Happiness:
-                        effectName = "快乐";
+                        effectName = "心情";
                         break;
                     case StudentProperty.Charm:
                         effectName = "魅力";
@@ -112,7 +116,7 @@ namespace AndroidApp1
                         effectName = GameManager.StudentData.crouse3Name;
                         break;
                 }
-                result += effectName + (effect.Value >= 0 ? "+" : "-") + $"{effect.Value}\n";
+                result += effectName + (effect.Value >= 0 ? "+" : "") + $"{effect.Value}\n";
             }
 
             return result;

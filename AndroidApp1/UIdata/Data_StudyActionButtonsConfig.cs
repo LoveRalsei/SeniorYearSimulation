@@ -4,19 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AndroidApp1.UI
+namespace AndroidApp1.UIData
 {
-    internal class Data_StudyActionButtons
+    internal class Data_StudyActionButtons:Data_ActionButtonsConfig
     {
-        private MainActivity _mainActivity;
-        private Student _student;
 
-        public List<ActionButtonConfig> ActionButtons;
-
-        public Data_StudyActionButtons(MainActivity mainActivity)
+        public Data_StudyActionButtons(MainActivity mainActivity):base(mainActivity)
         {
-            _mainActivity = mainActivity;
-            _student=GameManager.StudentData;
             ActionButtons = new List<ActionButtonConfig>
             {
                 new ActionButtonConfig
@@ -40,7 +34,7 @@ namespace AndroidApp1.UI
                     ResourceId = 2,
                     Title = "做卷子",
                     Description = "做卷子",
-                    CostText = "做卷子",
+                    CostText = "精力10",
                     CostEnergy = 10,
                     Effects = new List<KeyValuePair<StudentProperty, int>>
                     {
@@ -50,6 +44,21 @@ namespace AndroidApp1.UI
                     DialogIntro = "做卷子",
                     DialogFinish = "做卷子中······"
                 },
+                new ActionButtonConfig
+                {
+                    ResourceId = 3,
+                    Title = "读课本",
+                    Description = "读课本",
+                    CostText = "精力5",
+                    CostEnergy = 5,
+                    Effects = new List<KeyValuePair<StudentProperty, int>>
+                    {
+                        new KeyValuePair<StudentProperty, int>(StudentProperty.Chinese, 3)
+                    },
+                    DialogTitle = "读课本",
+                    DialogIntro = "读课本",
+                    DialogFinish = "读课本中······"
+                }
             };
         }
     }

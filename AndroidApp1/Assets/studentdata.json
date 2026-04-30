@@ -1,20 +1,20 @@
 {
   "Student_test": {
     "name": "张三",
-    "money": 1000,
-    "health": 80,
+    "money": 100,
+    "health": 70,
     "energy": 70,
-    "happiness": 90,
-    "charm": 85,
+    "happiness": 75,
+    "charm": 100,
     "laziness": 20,
     "confusion": 10,
-    "chinese": 85,
+    "chinese": 93,
     "math": 90,
-    "english": 60,
+    "english": 115,
     "crouse1Name": "物理",
-    "crouse1Grade": 92,
+    "crouse1Grade": 79,
     "crouse2Name": "化学",
-    "crouse2Grade": 95,
+    "crouse2Grade": 84,
     "crouse3Name": "生物",
     "crouse3Grade": 93
   }

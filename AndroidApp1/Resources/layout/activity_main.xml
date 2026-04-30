@@ -46,6 +46,13 @@
 			android:layout_height="wrap_content"
 			android:layout_weight="1"
 			android:text="消费" />
+		
+		<Button
+			android:id="@+id/action_doactivity"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="活动" />
 
 		<Button
 			android:id="@+id/action_pastime"
@@ -53,6 +60,13 @@
 			android:layout_height="wrap_content"
 			android:layout_weight="1"
 			android:text="消遣" />
+	
+		<Button
+			android:id="@+id/action_lazy"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="偷懒" />
 	</LinearLayout>
 
 	<!-- 下面的区域用于动态显示“其他控件”（这里用 TextView 占位），包在 ScrollView 以支持滚动 -->

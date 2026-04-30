@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AndroidApp1
+namespace AndroidApp1.UIData
 {
     internal class ActionButtonConfig
     {
