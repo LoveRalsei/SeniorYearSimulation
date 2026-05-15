@@ -13,6 +13,31 @@ namespace AndroidApp1
     public static class JsonFileReader
     {
         /// <summary>
+        /// Enumerate all top-level property names (keys) in a JSON object.
+        /// Used for auto-discovery of characters in studentdata.json.
+        /// </summary>
+        public static List<string> GetAllKeys(string assetFileName)
+        {
+            var keys = new List<string>();
+            try
+            {
+                var json = ReadJsonFromAssets(assetFileName);
+                if (string.IsNullOrEmpty(json)) return keys;
+
+                using var doc = JsonDocument.Parse(json);
+                if (doc.RootElement.ValueKind == JsonValueKind.Object)
+                {
+                    foreach (var prop in doc.RootElement.EnumerateObject())
+                    {
+                        keys.Add(prop.Name);
+                    }
+                }
+            }
+            catch { }
+            return keys;
+        }
+
+        /// <summary>
         /// 从应用的 Assets 中读取指定文件的内容为字符串。
         /// </summary>
         public static string? ReadJsonFromAssets(string assetFileName)

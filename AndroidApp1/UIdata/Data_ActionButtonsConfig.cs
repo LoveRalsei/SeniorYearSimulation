@@ -1,22 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AndroidApp1.UIData
+﻿namespace AndroidApp1.UIData
 {
     internal class Data_ActionButtonsConfig
     {
-        protected MainActivity _mainActivity;
-        protected Student _student;
+        protected StudentModifier _modifier;
 
-        public List<ActionButtonConfig> ActionButtons;
+        public List<ActionButtonConfig> ActionButtons = new();
 
-        public Data_ActionButtonsConfig(MainActivity mainActivity)
+        public Data_ActionButtonsConfig(StudentModifier modifier)
         {
-            _mainActivity = mainActivity;
-            _student = GameManager.StudentData;
+            _modifier = modifier;
         }
     }
 }

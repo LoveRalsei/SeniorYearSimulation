@@ -1,86 +1,80 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using Android.Content;
 using Android.Widget;
 using Android.Views;
+using AndroidApp1.UIData;
 
 namespace AndroidApp1
 {
-    //行动按钮的自定义控件，继承自LinearLayout
+    /// <summary>
+    /// Custom action button (LinearLayout) that shows an ActionDialog on click.
+    /// Handles both regular actions and subject-choice (study) actions
+    /// via ActionButtonConfig.RequiresSubjectChoice. No separate StudyActionButton needed.
+    ///
+    /// When the player confirms execution in the ActionDialog, this button
+    /// spawns a separate plain result dialog with typewriter animation and
+    /// property-change display.
+    /// </summary>
     public class ActionButton : LinearLayout
     {
-        // 三个TextView成员变量
-        protected TextView titleText;
-        protected TextView descText;
-        protected TextView costText;
+        protected TextView titleText = null!;
+        protected TextView descText = null!;
+        protected TextView costText = null!;
 
-        protected ActionDialog _dialog;
+        private ActionDialog? _dialog;
+        private StudentModifier? _studentModifier;
+        private ActionButtonConfig? _config;
 
-        // 构造函数
+        /// <summary>Called after an action completes (effects applied). Use to refresh UI.</summary>
+        public Action? OnActionCompleted;
+
         public ActionButton(Context context) : base(context)
         {
             Initialize(context);
         }
 
-        // 初始化布局和控件
         private void Initialize(Context context)
         {
-            // 1. 设置LinearLayout的基本属性
             this.Orientation = Orientation.Vertical;
             this.SetPadding(20, 20, 20, 20);
             this.SetBackgroundColor(Android.Graphics.Color.ParseColor("#F5F5F5"));
 
-            // 2. 创建水平布局用于标题和花费
-            var headerLayout = new LinearLayout(context);
-            headerLayout.Orientation = Orientation.Horizontal;
-            headerLayout.LayoutParameters = new LayoutParams(LayoutParams.MatchParent, LayoutParams.WrapContent);
+            // Header row: title + cost
+            var headerLayout = new LinearLayout(context)
+            {
+                Orientation = Orientation.Horizontal,
+                LayoutParameters = new LayoutParams(LayoutParams.MatchParent, LayoutParams.WrapContent)
+            };
 
-            // 标题TextView
-            titleText = new TextView(context);
-            titleText.TextSize = 16;
+            titleText = new TextView(context)
+            {
+                TextSize = 16
+            };
             titleText.SetTypeface(null, Android.Graphics.TypefaceStyle.Bold);
             titleText.LayoutParameters = new LayoutParams(0, LayoutParams.WrapContent, 1);
             headerLayout.AddView(titleText);
 
-            // 花费TextView
-            costText = new TextView(context);
-            costText.TextSize = 14;
-            costText.LayoutParameters = new LayoutParams(LayoutParams.WrapContent, LayoutParams.WrapContent);
+            costText = new TextView(context)
+            {
+                TextSize = 14,
+                LayoutParameters = new LayoutParams(LayoutParams.WrapContent, LayoutParams.WrapContent)
+            };
             headerLayout.AddView(costText);
 
-            // 3. 创建描述TextView
-            descText = new TextView(context);
-            descText.TextSize = 14;
-            descText.LayoutParameters = new LayoutParams(LayoutParams.MatchParent, LayoutParams.WrapContent);
+            // Description
+            descText = new TextView(context)
+            {
+                TextSize = 14,
+                LayoutParameters = new LayoutParams(LayoutParams.MatchParent, LayoutParams.WrapContent)
+            };
 
-            // 4. 添加到LinearLayout
             this.AddView(headerLayout);
             this.AddView(descText);
         }
 
-        // 公共方法：设置标题
-        public void SetTitle(string title)
-        {
-            titleText.Text = title;
-        }
+        public void SetTitle(string title) => titleText.Text = title;
+        public void SetDescription(string description) => descText.Text = description;
+        public void SetCost(string cost) => costText.Text = cost;
 
-        // 公共方法：设置介绍文本
-        public void SetDescription(string description)
-        {
-            descText.Text = description;
-        }
-
-        // 公共方法：设置花费文本
-        public void SetCost(string cost)
-        {
-            costText.Text = cost;
-        }
-
-        // 公共方法：一次性设置所有文本
         public void SetAllTexts(string title, string description, string cost)
         {
             titleText.Text = title;
@@ -88,22 +82,86 @@ namespace AndroidApp1
             costText.Text = cost;
         }
 
-        public void SetDialog(string title, string intro, string finishText, int costEnergy, List<KeyValuePair<StudentProperty, int>> effects)
+        /// <summary>
+        /// Configure the confirm dialog for this action button.
+        /// </summary>
+        public void SetDialog(ActionButtonConfig config, StudentModifier modifier)
         {
+            _studentModifier = modifier;
+            _config = config;
+
             _dialog = new ActionDialog(Context);
-            _dialog.BecomeActionDialog(title, intro, finishText, costEnergy,effects);
-            _dialog.CancelOnTouchOutside = true; // 点击外部区域关闭弹窗
+            _dialog.BecomeActionDialog(config, modifier);
+            _dialog.CancelOnTouchOutside = true;
+
+            // When the player confirms execution, spawn the result dialog
+            _dialog.OnExecuteConfirmed += OnExecuteConfirmed;
         }
 
         public void ShowDialog()
         {
+            if (_dialog == null) return;
+
+            // Add subject-choice scroll buttons if needed
+            if (_dialog.RequiresSubjectChoice && _studentModifier != null)
+            {
+                _dialog.AddSubjectButtons();
+            }
+
             _dialog.Show();
         }
 
-        // 公共方法：设置点击事件
+        /// <summary>Set the click listener for this button.</summary>
         public void SetOnClickListener(EventHandler onClick)
         {
             this.Click += onClick;
+        }
+
+        // ── Result dialog (spawned when player clicks "执行") ─────────
+
+        private void OnExecuteConfirmed(ActionButtonConfig config, StudentProperty? selectedSubject)
+        {
+            if (_studentModifier == null) return;
+
+            // Resolve effects (redirect subject-type effects to chosen subject)
+            var resolvedEffects = ActionDialog.ResolveEffects(config.Effects, selectedSubject);
+
+            // ── Create the result dialog (plain, no scroll buttons) ──
+            var resultDialog = new CustomDialog(Context);
+            resultDialog.SetTitle(config.DialogTitle);
+
+            // Button: visible but does nothing initially
+            resultDialog.SetButtonText("");
+            resultDialog.SetAllowButtonClick(false);
+            resultDialog.SetDisableButtonClickFunction(() => { });
+
+            // Typewriter effect for finish text
+            resultDialog.EnableTypewriterEffect(true);
+            resultDialog.SetOnTypewriterComplete(() =>
+            {
+                // Apply effects to student
+                _studentModifier.ApplyEffects(resolvedEffects);
+                int consumed = _studentModifier.ConsumeEnergy(config.CostEnergy);
+
+                // Notify UI to refresh
+                OnActionCompleted?.Invoke();
+
+                // Build and display result text
+                string resultText = ActionDialog.GetEffectsString(consumed, resolvedEffects,
+                    _studentModifier.Student);
+                resultDialog.EnableTypewriterEffect(false);
+                resultDialog.SetMessage(resultText);
+
+                // Activate close button
+                resultDialog.SetButtonText("关闭");
+                resultDialog.SetAllowButtonClick(true);
+                resultDialog.SetOnButtonClick(() => resultDialog.Hide());
+            });
+
+            // Trigger typewriter by setting message
+            resultDialog.SetMessage(config.DialogFinish);
+            resultDialog.CancelOnTouchOutside = true;
+            resultDialog.Show();
         }
     }
 }

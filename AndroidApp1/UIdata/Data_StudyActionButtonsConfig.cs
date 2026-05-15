@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AndroidApp1.UIData
+﻿namespace AndroidApp1.UIData
 {
-    internal class Data_StudyActionButtons:Data_ActionButtonsConfig
+    internal class Data_StudyActionButtons : Data_ActionButtonsConfig
     {
-
-        public Data_StudyActionButtons(MainActivity mainActivity):base(mainActivity)
+        public Data_StudyActionButtons(StudentModifier modifier) : base(modifier)
         {
             ActionButtons = new List<ActionButtonConfig>
             {
@@ -20,14 +13,14 @@ namespace AndroidApp1.UIData
                     Description = "写习题册",
                     CostText = "精力10",
                     CostEnergy = 10,
-                    Effects = new List<KeyValuePair<StudentProperty, int>>
+                    Effects = new List<PropertyEffect>
                     {
-                        new KeyValuePair<StudentProperty, int>(StudentProperty.Chinese, 7),
+                        new PropertyEffect(StudentProperty.Chinese, 7),
                     },
                     DialogTitle = "写习题册",
                     DialogIntro = "写习题册",
-                    DialogFinish = "学习中······"
-                    
+                    DialogFinish = "学习中······",
+                    RequiresSubjectChoice = true
                 },
                 new ActionButtonConfig
                 {
@@ -36,13 +29,14 @@ namespace AndroidApp1.UIData
                     Description = "做卷子",
                     CostText = "精力10",
                     CostEnergy = 10,
-                    Effects = new List<KeyValuePair<StudentProperty, int>>
+                    Effects = new List<PropertyEffect>
                     {
-                        new KeyValuePair<StudentProperty, int>(StudentProperty.Chinese, 7)
+                        new PropertyEffect(StudentProperty.Chinese, 7)
                     },
                     DialogTitle = "做卷子",
                     DialogIntro = "做卷子",
-                    DialogFinish = "做卷子中······"
+                    DialogFinish = "做卷子中······",
+                    RequiresSubjectChoice = true
                 },
                 new ActionButtonConfig
                 {
@@ -51,13 +45,14 @@ namespace AndroidApp1.UIData
                     Description = "读课本",
                     CostText = "精力5",
                     CostEnergy = 5,
-                    Effects = new List<KeyValuePair<StudentProperty, int>>
+                    Effects = new List<PropertyEffect>
                     {
-                        new KeyValuePair<StudentProperty, int>(StudentProperty.Chinese, 3)
+                        new PropertyEffect(StudentProperty.Chinese, 3)
                     },
                     DialogTitle = "读课本",
                     DialogIntro = "读课本",
-                    DialogFinish = "读课本中······"
+                    DialogFinish = "读课本中······",
+                    RequiresSubjectChoice = true
                 }
             };
         }

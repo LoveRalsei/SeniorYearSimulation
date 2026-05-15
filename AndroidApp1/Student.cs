@@ -1,53 +1,73 @@
-
+using System.Reflection;
+using System.Text.Json.Serialization;
 
 namespace AndroidApp1
 {
     public class Student
     {
-        //属性
-        public string name { get; set; }
-        public int money { get; set; }
-        public int health { get; set; }
-        public int energy { get; set; }
-        public int happiness { get; set; }
-        public int charm { get; set; }
-        public int laziness { get; set; }
-        public int confusion { get; set; }
+        
+        public string name { get; private set; }
 
-        public int chinese { get; set; }
-        public int math { get; set; }
-        public int english { get; set; }
-        public string crouse1Name { get; set; }
-        public int crouse1Grade { get; set; }
-        public string crouse2Name { get; set; }
-        public int crouse2Grade { get; set; }
-        public string crouse3Name { get; set; }
-        public int crouse3Grade { get; set; }
+        
+        public int money      { get; private set; }
+        public int health     { get; private set; }
+        public int energy     { get; private set; }
+        public int happiness  { get; private set; }
+        public int charm      { get; private set; }
+        public int laziness   { get; private set; }
+        public int confusion  { get; private set; }
+        public int chinese    { get; private set; }
+        public int math       { get; private set; }
+        public int english    { get; private set; }
+        public string crouse1Name { get; private set; }
+        public string crouse2Name { get; private set; }
+        public string crouse3Name { get; private set; }
+        public int crouse1Grade { get; private set; }
+        public int crouse2Grade { get; private set; }
+        public int crouse3Grade { get; private set; }
 
-        protected const int _maxChinese = 150;
-        protected const int _maxMath = 150;
-        protected const int _maxEnglish = 150;
-        protected const int _maxCrouse1Grade = 100;
-        protected const int _maxCrouse2Grade = 100;
-        protected const int _maxCrouse3Grade = 100;
+        // ── Static reflection cache for property access ──────────────
+
+        private static readonly Dictionary<StudentProperty, PropertyInfo> _propInfoCache;
+
+        static Student()
+        {
+            _propInfoCache = new Dictionary<StudentProperty, PropertyInfo>();
+            foreach (var key in PropertyMetadata.AllKeys)
+            {
+                var prop = typeof(Student).GetProperty(PropertyMetadata.Get(key).PropertyName,
+                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                if (prop != null)
+                    _propInfoCache[key] = prop;
+            }
+        }
+
+        // ── Constructors ─────────────────────────────────────────────
 
         public Student()
         {
             this.name = "无参构造对象";
+            this.crouse1Name = "";
+            this.crouse2Name = "";
+            this.crouse3Name = "";
         }
 
-        public Student(string name, int money, int health, int energy, int happiness, int charm, int laziness, int confusion, int chinese, int math, int english, string crouse1Name, int crouse1Grade, string crouse2Name, int crouse2Grade, string crouse3Name, int crouse3Grade)
+        [JsonConstructor]
+        public Student(string name, int money, int health, int energy, int happiness,
+            int charm, int laziness, int confusion,
+            int chinese, int math, int english,
+            string crouse1Name, int crouse1Grade,
+            string crouse2Name, int crouse2Grade,
+            string crouse3Name, int crouse3Grade)
         {
             this.name = name;
             this.money = money;
-
             this.health = health;
             this.energy = energy;
             this.happiness = happiness;
             this.charm = charm;
             this.laziness = laziness;
             this.confusion = confusion;
-
             this.chinese = chinese;
             this.math = math;
             this.english = english;
@@ -59,115 +79,100 @@ namespace AndroidApp1
             this.crouse3Grade = crouse3Grade;
         }
 
-        public Student(Student student)
+        /// <summary>
+        /// OCP-compliant copy constructor. Iterates PropertyMetadata registry
+        /// so adding a new property requires NO change here.
+        /// </summary>
+        public Student(Student source)
         {
-            if (student == null)
-                return;
-            this.name = student.name;
-            this.money = student.money;
-            this.health = student.health;
-            this.energy = student.energy;
-            this.happiness = student.happiness;
-            this.charm = student.charm;
-            this.laziness = student.laziness;
-            this.confusion = student.confusion;
+            if (source == null) return;
 
-            this.chinese = student.chinese;
-            this.math = student.math;
-            this.english = student.english;
-            this.crouse1Name = student.crouse1Name;
-            this.crouse1Grade = student.crouse1Grade;
-            this.crouse2Name = student.crouse2Name;
-            this.crouse2Grade = student.crouse2Grade;
-            this.crouse3Name = student.crouse3Name;
-            this.crouse3Grade = student.crouse3Grade;
-        }
+            this.name = source.name;
+            this.crouse1Name = source.crouse1Name;
+            this.crouse2Name = source.crouse2Name;
+            this.crouse3Name = source.crouse3Name;
 
-        public void IncreaseProperty(StudentProperty property, int value)
-        {
-            switch (property)
+            foreach (var key in PropertyMetadata.AllKeys)
             {
-                case StudentProperty.Money:
-                    this.money += value;
-                    break;
-                case StudentProperty.Health:
-                    this.health += value;
-                    break;
-                case StudentProperty.Energy:
-                    this.energy += value;
-                    break;
-                case StudentProperty.Happiness:
-                    this.happiness += value;
-                    break;
-                case StudentProperty.Charm:
-                    this.charm += value;
-                    break;
-                case StudentProperty.Laziness:
-                    this.laziness += value;
-                    break;
-                case StudentProperty.Confusion:
-                    this.confusion += value;
-                    break;
-                case StudentProperty.Chinese:
-                    this.chinese += value;
-                    break;
-                case StudentProperty.Math:
-                    this.math += value;
-                    break;
-                case StudentProperty.English:
-                    this.english += value;
-                    break;
-                case StudentProperty.Crouse1Grade:
-                    this.crouse1Grade += value;
-                    break;
-                case StudentProperty.Crouse2Grade:
-                    this.crouse2Grade += value;
-                    break;
-                case StudentProperty.Crouse3Grade:
-                    this.crouse3Grade += value;
-                    break;
+                SetPropertyValue(key, source.GetPropertyValue(key));
             }
         }
 
-        public bool EnoughEnergy(int cost)
+        // ── Internal property access (used by StudentModifier) ───────
+
+        /// <summary>Get the current value of a tracked numeric property.</summary>
+        internal int GetPropertyValue(StudentProperty property)
         {
-            return this.energy >= cost;
+            return property switch
+            {
+                StudentProperty.Money        => money,
+                StudentProperty.Health       => health,
+                StudentProperty.Energy       => energy,
+                StudentProperty.Happiness    => happiness,
+                StudentProperty.Charm        => charm,
+                StudentProperty.Laziness     => laziness,
+                StudentProperty.Confusion    => confusion,
+                StudentProperty.Chinese      => chinese,
+                StudentProperty.Math         => math,
+                StudentProperty.English      => english,
+                StudentProperty.Crouse1Grade => crouse1Grade,
+                StudentProperty.Crouse2Grade => crouse2Grade,
+                StudentProperty.Crouse3Grade => crouse3Grade,
+                _ => throw new ArgumentOutOfRangeException(nameof(property), property, null)
+            };
         }
 
-        public void ReduceEnergy(int value)
+        /// <summary>
+        /// Set a numeric property to an exact value, clamped to [Min, Max].
+        /// Returns the value actually stored (may differ due to clamping).
+        /// Only visible within this assembly (called by StudentModifier).
+        /// </summary>
+        internal int SetPropertyValue(StudentProperty property, int value)
         {
-            this.energy -= value;
+            var meta = PropertyMetadata.Get(property);
+            int clamped = Math.Clamp(value, meta.MinValue, meta.MaxValue);
+
+            switch (property)
+            {
+                case StudentProperty.Money:        money      = clamped; break;
+                case StudentProperty.Health:       health     = clamped; break;
+                case StudentProperty.Energy:       energy     = clamped; break;
+                case StudentProperty.Happiness:    happiness  = clamped; break;
+                case StudentProperty.Charm:        charm      = clamped; break;
+                case StudentProperty.Laziness:     laziness   = clamped; break;
+                case StudentProperty.Confusion:    confusion  = clamped; break;
+                case StudentProperty.Chinese:      chinese    = clamped; break;
+                case StudentProperty.Math:         math       = clamped; break;
+                case StudentProperty.English:      english    = clamped; break;
+                case StudentProperty.Crouse1Grade: crouse1Grade = clamped; break;
+                case StudentProperty.Crouse2Grade: crouse2Grade = clamped; break;
+                case StudentProperty.Crouse3Grade: crouse3Grade = clamped; break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(property), property, null);
+            }
+
+            return clamped;
         }
 
-        public bool Lazy()
+        /// <summary>Increment a property by delta, clamped; returns actual delta applied.</summary>
+        internal int AdjustPropertyValue(StudentProperty property, int delta)
         {
-            Random random = new Random();
-            int randomValue = random.Next(1, 101);
-            return randomValue <= this.laziness;
+            int oldValue = GetPropertyValue(property);
+            int newValue = SetPropertyValue(property, oldValue + delta);
+            return newValue - oldValue;
         }
 
-        public bool Confusion()
-        {
-            Random random = new Random();
-            int randomValue = random.Next(1, 101);
-            return randomValue <= this.confusion;
-        }
-    }
+        // ── Energy convenience ───────────────────────────────────────
 
-    public enum StudentProperty
-    {
-        Money,
-        Health,
-        Energy,
-        Happiness,
-        Charm,
-        Laziness,
-        Confusion,
-        Chinese,
-        Math,
-        English,
-        Crouse1Grade,
-        Crouse2Grade,
-        Crouse3Grade
+        public bool EnoughEnergy(int cost) => energy >= cost;
+
+        /// <summary>Reduce energy by an amount; returns actual amount consumed.</summary>
+        internal int ReduceEnergy(int amount)
+        {
+            int oldEnergy = energy;
+            int newEnergy = Math.Max(0, energy - amount);
+            energy = newEnergy;
+            return oldEnergy - newEnergy;
+        }
     }
 }

@@ -16,6 +16,187 @@
     "crouse2Name": "化学",
     "crouse2Grade": 84,
     "crouse3Name": "生物",
-    "crouse3Grade": 93
+    "crouse3Grade": 93,
+    "events": [
+      null,
+      {
+        "id": "zs_turn2",
+        "title": "模拟考临近",
+        "description": "下周就要模拟考了，你打算怎么准备？",
+        "probability": 0.8,
+        "bottomButtonText": "忽略",
+        "options": [
+          {
+            "text": "全力刷题",
+            "resultText": "你刷了三天三夜的题，语文和数学大幅提升！\n但精力消耗很大。",
+            "effects": [
+              { "Property": "Chinese", "Value": 10 },
+              { "Property": "Math", "Value": 10 },
+              { "Property": "Energy", "Value": -20 }
+            ]
+          },
+          {
+            "text": "适度复习",
+            "resultText": "你按计划复习，各科都有小进步。",
+            "effects": [
+              { "Property": "Chinese", "Value": 5 },
+              { "Property": "Math", "Value": 5 },
+              { "Property": "English", "Value": 5 }
+            ]
+          },
+          {
+            "text": "摆烂",
+            "resultText": "你什么也没做，心情倒是好了不少。",
+            "effects": [
+              { "Property": "Happiness", "Value": 15 },
+              { "Property": "Laziness", "Value": 5 }
+            ]
+          }
+        ]
+      },
+      null,
+      {
+        "id": "zs_turn4",
+        "title": "室友矛盾",
+        "description": "室友最近总是深夜打游戏，影响你睡眠。你打算怎么办？",
+        "probability": 0.7,
+        "bottomButtonText": "算了",
+        "options": [
+          {
+            "text": "好好沟通",
+            "resultText": "你和室友坦诚交流，他答应注意音量。\n心情变好了，魅力也提升了。",
+            "effects": [
+              { "Property": "Happiness", "Value": 10 },
+              { "Property": "Charm", "Value": 5 },
+              { "Property": "Health", "Value": 10 }
+            ]
+          },
+          {
+            "text": "直接吵架",
+            "resultText": "你们大吵一架，关系更僵了。\n心情变差，但你的不满得到了宣泄。",
+            "effects": [
+              { "Property": "Happiness", "Value": -10 },
+              { "Property": "Confusion", "Value": 5 },
+              { "Property": "Laziness", "Value": -5 }
+            ]
+          },
+          {
+            "text": "忍气吞声",
+            "resultText": "你默默忍受，但睡眠不足让你精力下降，学习效率变低。",
+            "effects": [
+              { "Property": "Health", "Value": -10 },
+              { "Property": "Energy", "Value": -15 },
+              { "Property": "Chinese", "Value": -5 },
+              { "Property": "Math", "Value": -5 }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "zs_turn5",
+        "title": "家长来访",
+        "description": "你的父母突然来学校看你，还带了很多吃的。",
+        "probability": 0.9,
+        "bottomButtonText": "知道了",
+        "options": [
+          {
+            "text": "陪父母逛逛校园",
+            "resultText": "你和父母在校园里散步聊天，他们很开心。\n心情提升，金钱增加（他们给了零花钱）。",
+            "effects": [
+              { "Property": "Happiness", "Value": 20 },
+              { "Property": "Money", "Value": 50 }
+            ]
+          },
+          {
+            "text": "婉拒，要学习",
+            "resultText": "你以学业为重婉拒了父母，他们虽然理解但有些失望。\n语文和数学小有提升。",
+            "effects": [
+              { "Property": "Chinese", "Value": 5 },
+              { "Property": "Math", "Value": 5 },
+              { "Property": "Happiness", "Value": -5 }
+            ]
+          }
+        ]
+      },
+      null,
+      {
+        "id": "zs_turn7",
+        "title": "社团招新",
+        "description": "学校社团正在招新，有几个社团看起来不错。你要加入吗？",
+        "probability": 1.0,
+        "bottomButtonText": "不加入",
+        "options": [
+          {
+            "text": "加入学习小组",
+            "resultText": "你加入了学习小组，大家一起讨论问题。\n各科成绩都有提升，但精力消耗不小。",
+            "effects": [
+              { "Property": "Chinese", "Value": 5 },
+              { "Property": "Math", "Value": 5 },
+              { "Property": "English", "Value": 5 },
+              { "Property": "Energy", "Value": -10 }
+            ]
+          },
+          {
+            "text": "加入运动社团",
+            "resultText": "你加入了篮球社，每天锻炼让身体更好了。\n健康大幅提升，心情也不错。",
+            "effects": [
+              { "Property": "Health", "Value": 15 },
+              { "Property": "Happiness", "Value": 10 },
+              { "Property": "Charm", "Value": 5 },
+              { "Property": "Energy", "Value": -15 }
+            ]
+          },
+          {
+            "text": "加入文艺社团",
+            "resultText": "你加入了文学社，认识了不少志同道合的朋友。\n魅力提升，心情变好。",
+            "effects": [
+              { "Property": "Charm", "Value": 10 },
+              { "Property": "Happiness", "Value": 15 },
+              { "Property": "Chinese", "Value": 5 }
+            ]
+          }
+        ]
+      },
+      null,
+      {
+        "id": "zs_turn9",
+        "title": "考前焦虑",
+        "description": "距离高考越来越近，你开始感到焦虑。如何调整？",
+        "probability": 1.0,
+        "bottomButtonText": "放空一会",
+        "options": [
+          {
+            "text": "找老师谈心",
+            "resultText": "老师给你做了心理辅导，你感觉好多了。\n迷茫降低，信心增强。",
+            "effects": [
+              { "Property": "Confusion", "Value": -15 },
+              { "Property": "Happiness", "Value": 10 },
+              { "Property": "Chinese", "Value": 5 }
+            ]
+          },
+          {
+            "text": "疯狂刷题缓解焦虑",
+            "resultText": "你用刷题来麻痹自己，虽然成绩提升了，但健康出了问题。",
+            "effects": [
+              { "Property": "Chinese", "Value": 10 },
+              { "Property": "Math", "Value": 10 },
+              { "Property": "English", "Value": 10 },
+              { "Property": "Health", "Value": -15 },
+              { "Property": "Energy", "Value": -25 }
+            ]
+          },
+          {
+            "text": "适当放松",
+            "resultText": "你去操场跑了几圈，又看了会儿课外书，心情平复了不少。",
+            "effects": [
+              { "Property": "Happiness", "Value": 20 },
+              { "Property": "Health", "Value": 10 },
+              { "Property": "Laziness", "Value": 5 }
+            ]
+          }
+        ]
+      },
+      null
+    ]
   }
 }
